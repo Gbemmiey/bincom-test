@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Polling units</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/views/results.css') }}">
+</head>
+<body>
+
+<h1>Available Polling Units</h1>
+<div class="results">
+    {% for d in data %}
+        <a href="/pu/{{ d.unique_id }}">
+            <div class="result">
+                {{ d.polling_unit_name }}
+                <hr>
+                <div class="result-details">
+                    <span>{{ d.polling_unit_number }}</span>
+                    <p>{{ d.polling_unit_description }}</p>
+                </div>
+
+            </div>
+        </a>
+
+    {% endfor %}
+</div>
+
+</body>
+</html>

@@ -17,7 +17,7 @@ def setup_db(app, database_path=Config.SQLALCHEMY_DATABASE_URI):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
-    db.drop_all()
+    # db.drop_all()
     db.create_all()
 
 

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Polling Unit Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/views/result.css') }}">
+</head>
+<body>
+
+<h1>        {{ options.unit_name }}</h1>
+
+<hr>
+{{ options.unit_description }}
+<hr>
+<div class="results">
+
+    {% for v in data %}
+        <div class="result">
+            <span>{{ v.party_abbreviation }} => {{ v.party_score }}</span>
+        </div>
+
+    {% endfor %}
+
+
+</div>
+
+</body>
+</html>
