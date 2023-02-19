@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Local Governments</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/views/results.css') }}">
+
+</head>
+<body>
+<script src="{{ url_for('static', filename='js/lga.js') }}"></script>
+<h1>Local Governments</h1>
+
+<div class="count">
+    <select name="lga" id="lga_list">
+        {% for each in data %}
+            <option value="{{ each.uniqueid }}">{{ each.lga_name }}</option>
+        {% endfor %}
+    </select>
+    <button onclick="getVoteCounts()">Check</button>
+    <span id='total_votes' class="count">...</span>
+
+</div>
+
+<div class="results">
+    {% for l in data %}
+        <a href="">
+            <div class="result">
+                <span>{{ l.lga_name }} </span>
+                <hr>
+                <div class="result-details">
+                    <p>{{ l.lga_description }}</p>
+                </div>
+            </div>
+        </a>
+
+    {% endfor %}
+
+</div>
+<hr>
+{{ options.number }}
+</body>
+</html>

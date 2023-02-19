@@ -1,11 +1,14 @@
 from flask import Flask
-from flask import render_template, url_for, redirect
+from flask import render_template, url_for, redirect, jsonify
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql import functions
 
 from model import *
 from config import Config
+
+import numpy as np
 
 app = Flask(__name__)
 
@@ -78,6 +81,68 @@ def display_polling_units():
         results_list.append(result)
 
     return render_template('/views/polling_units.html', data=results_list)
+
+
+@app.route('/lga')
+def display_lgas():
+    results = session.query(lga).all()
+    lga_list = []
+    for result in results:
+        r = {
+            'uniqueid': result.uniqueid,
+            'lga_name': result.lga_name,
+            'lga_description': result.lga_description,
+            'state_id': result.state_id
+        }
+        lga_list.append(r)
+    options = {
+        'number': len(results)
+    }
+
+    return render_template('/views/lgas.html', data=lga_list, options=options)
+
+
+@app.route('/lga/<int:lga_id>')
+def get_count(lga_id):
+    results = session.query(announced_pu_results, polling_unit, lga) \
+        .filter(announced_pu_results.polling_unit_uniqueid == polling_unit.uniqueid) \
+        .filter(lga.uniqueid == lga_id) \
+        .all()
+
+    vote_sum = 0
+    total = 0
+
+    res_list = []
+    for res, pol, lg in results:
+        r = {
+            'score': res.party_score,
+            'party': res.party_abbreviation,
+            'polling_unit_name': pol.polling_unit_name,
+            'lga_name': lg.lga_name
+        }
+        total = total + int(res.party_score)
+        res_list.append(r)
+
+    i = 0
+    vote_sum = 0
+    while i < len(res_list):
+        vote_sum += int(r['score'])
+        i += 1
+
+    scores = []
+    for r in res_list:
+        scores.append(int(r['score']))
+    print(scores)
+    print(np.sum(scores))
+
+    ret = {
+        'status_code': 200,
+        'sum': sum(scores),
+        'scores': scores,
+        'message': res_list
+    }
+
+    return jsonify(ret)
 
 
 if __name__ == '__main__':
