@@ -1,8 +1,11 @@
-from sqlalchemy import Column, String, Integer, TIMESTAMP
+from sqlalchemy import Column, String, Integer, TIMESTAMP, ForeignKey
+from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import declarative_base
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 
 db = SQLAlchemy()
+base = declarative_base()
 
 
 def setup_db(app, database_path=Config.SQLALCHEMY_DATABASE_URI):
@@ -14,18 +17,20 @@ def setup_db(app, database_path=Config.SQLALCHEMY_DATABASE_URI):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
+    db.drop_all()
     db.create_all()
 
 
 class agentname(db.Model):
     __tablename__ = 'agentname'
 
-    name_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
+    name_id = Column(Integer, unique=True)
     firstname = Column(String)
     lastname = Column(String)
     email = Column(String)
     phone = Column(String)
-    pollingunit_uniqueid = Column(String)
+    pollingunit_uniqueid = Column(Integer)
 
     def __init__(self, firstname, lastname, email, phone, pollingunit_uniqueid):
         self.firstname = firstname
@@ -129,21 +134,26 @@ class announced_ward_results(db.Model):
 
 class lga(db.Model):
     __tablename__ = 'lga'
-
-    unique_id = Column(Integer, primary_key=True)
-    lga_id = Column(Integer)
+    id = Column(Integer, primary_key=True)
+    uniqueid = Column(Integer, unique=True)
+    lga_id = Column(Integer, unique=True)
     lga_name = Column(String)
-    state_id = Column(Integer)
+    state_id = Column(Integer, ForeignKey('states.state_id'))
     lga_description = Column(String)
     entered_by_user = Column(String)
     date_entered = Column(TIMESTAMP)
     user_ip_address = Column(String)
 
-    def __init__(self, unique_id, lga_id,
+    # relationships
+    ward = relationship('ward', cascade="all, delete-orphan")
+
+    polling_unit = relationship('polling_unit', cascade="all, delete-orphan")
+
+    def __init__(self, uniqueid, lga_id,
                  lga_name, lga_description,
                  entered_by_user,
                  date_entered, user_ip_address):
-        self.unique_id = unique_id
+        self.uniqueid = uniqueid
         self.lga_id = lga_id
         self.lga_name = lga_name
         self.lga_description = lga_description
@@ -165,28 +175,34 @@ class party(db.Model):
 
 class polling_unit(db.Model):
     __tablename__ = 'polling_unit'
+    id = Column(Integer, primary_key=True)
 
-    unique_id = Column(Integer, primary_key=True)
+    uniqueid = Column(Integer, unique=True)
     polling_unit_id = Column(Integer)
+
     ward_id = Column(Integer)
-    lga_id = Column(Integer)
-    uniquewardid = Column(Integer)
+    lga_id = Column(Integer, ForeignKey('lga.lga_id'))
+
+    uniquewardid = Column(Integer, ForeignKey('ward.uniqueid'))
+
     polling_unit_number = Column(String)
     polling_unit_name = Column(String)
     polling_unit_description = Column(String)
     lat = Column(String)
-    long = Column(Integer)
+    long = Column(String)
     entered_by_user = Column(String)
     date_entered = Column(TIMESTAMP)
     user_ip_address = Column(String)
 
-    def __init__(self, unique_id, polling_unit_id, ward_id,
+    # Relationships
+
+    def __init__(self, uniqueid, polling_unit_id, ward_id,
                  lga_id, uniquewardid, polling_unit_number,
                  polling_unit_name, polling_unit_description,
                  lat, long,
                  entered_by_user,
                  date_entered, user_ip_address):
-        self.unique_id = unique_id
+        self.uniqueid = uniqueid
         self.polling_unit_id = polling_unit_id
         self.ward_id = ward_id
         self.lga_id = lga_id
@@ -203,8 +219,13 @@ class polling_unit(db.Model):
 
 class states(db.Model):
     __tablename__ = 'states'
-    state_id = Column(Integer, primary_key=True)
+
+    id = Column(Integer, primary_key=True)
+    state_id = Column(Integer, unique=True)
     state_name = Column(String)
+
+    # Relationship
+    lga = relationship('lga', cascade="all, delete-orphan")
 
     def __init__(self, state_name):
         self.state_name = state_name
@@ -212,21 +233,25 @@ class states(db.Model):
 
 class ward(db.Model):
     __tablename__ = 'ward'
-
-    unique_id = Column(Integer, primary_key=True)
-    ward_id = Column(Integer)
+    id = Column(Integer, primary_key=True)
+    uniqueid = Column(Integer, unique=True)
+    ward_id = Column(Integer, nullable=False)
     ward_name = Column(String)
-    lga_id = Column(Integer)
+    lga_id = Column(Integer, ForeignKey('lga.lga_id'))
     ward_description = Column(String)
     entered_by_user = Column(String)
     date_entered = Column(TIMESTAMP)
     user_ip_address = Column(String)
 
-    def __init__(self, unique_id, ward_id, ward_name,
+    # Relationships
+    polling_unit = relationship('polling_unit', cascade="all, delete-orphan")
+
+    def __init__(self, uniqueid, ward_id, ward_name,
                  lga_id, ward_description,
                  entered_by_user,
                  date_entered, user_ip_address):
         self.ward_id = ward_id
+        self.uniqueid = uniqueid
         self.ward_name = ward_name
         self.lga_id = lga_id
         self.ward_description = ward_description
