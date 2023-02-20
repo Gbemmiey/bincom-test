@@ -67,12 +67,14 @@ class announced_pu_results(db.Model):
     __tablename__ = 'announced_pu_results'
 
     result_id = Column(Integer, primary_key=True)
-    polling_unit_uniqueid = Column(Integer)
-    party_abbreviation = Column(String)
+    polling_unit_uniqueid = Column(Integer, ForeignKey('polling_unit.uniqueid'))
+    party_abbreviation = Column(String, ForeignKey('party.partyid'))
     party_score = Column(String)
     entered_by_user = Column(String)
     date_entered = Column(TIMESTAMP)
     user_ip_address = Column(String)
+
+    # Relationships
 
     def __init__(self, result_id, polling_unit_uniqueid, party_abbreviation,
                  party_score, entered_by_user,
@@ -165,8 +167,11 @@ class lga(db.Model):
 class party(db.Model):
     __tablename__ = 'party'
     id = Column(Integer, primary_key=True)
-    partyid = Column(String)
+    partyid = Column(String, unique=True)
     partyname = Column(String)
+
+    # Relationships
+    result = relationship('announced_pu_results', cascade="all, delete-orphan")
 
     def __init__(self, partyid, partyname):
         self.partyid = partyid
@@ -195,6 +200,7 @@ class polling_unit(db.Model):
     user_ip_address = Column(String)
 
     # Relationships
+    result = relationship('announced_pu_results', cascade="all, delete-orphan")
 
     def __init__(self, uniqueid, polling_unit_id, ward_id,
                  lga_id, uniquewardid, polling_unit_number,

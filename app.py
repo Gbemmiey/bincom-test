@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import render_template, url_for, redirect, jsonify
 
-from sqlalchemy import create_engine, func
+from sqlalchemy import create_engine, func, and_
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import functions
 
@@ -9,6 +9,7 @@ from model import *
 from config import Config
 
 import numpy as np
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -104,45 +105,101 @@ def display_lgas():
 
 @app.route('/lga/<int:lga_id>')
 def get_count(lga_id):
-    results = session.query(announced_pu_results, polling_unit, lga) \
-        .filter(announced_pu_results.polling_unit_uniqueid == polling_unit.uniqueid) \
-        .filter(lga.uniqueid == lga_id) \
-        .all()
+    # Working query - Returns a list of rows
+    results = session.query(announced_pu_results).outerjoin(polling_unit,
+                                                            announced_pu_results.polling_unit_uniqueid == polling_unit.uniqueid).join(
+        lga).filter(polling_unit.lga_id == lga_id).all()
 
-    vote_sum = 0
+    # Working query
+    # Returns a list of rows
+    # n_que = session.query(announced_pu_results).select_from(polling_unit).filter_by(lga_id=lga_id).join(
+    #     announced_pu_results, polling_unit.uniqueid == announced_pu_results.polling_unit_uniqueid).all()
+
     total = 0
-
-    res_list = []
-    for res, pol, lg in results:
-        r = {
-            'score': res.party_score,
-            'party': res.party_abbreviation,
-            'polling_unit_name': pol.polling_unit_name,
-            'lga_name': lg.lga_name
-        }
-        total = total + int(res.party_score)
-        res_list.append(r)
-
-    i = 0
-    vote_sum = 0
-    while i < len(res_list):
-        vote_sum += int(r['score'])
-        i += 1
-
-    scores = []
-    for r in res_list:
-        scores.append(int(r['score']))
-    print(scores)
-    print(np.sum(scores))
+    if not results:
+        total = 0
+    else:
+        for row in results:
+            total += int(row.party_score)
 
     ret = {
         'status_code': 200,
-        'sum': sum(scores),
-        'scores': scores,
-        'message': res_list
+        'sum': total
     }
 
     return jsonify(ret)
+
+
+@app.route('/new-result')
+def display_result_form():
+    results = session.query(states).all()
+    res_list = []
+    for r in results:
+        res = {
+            'state_id': r.state_id,
+            'state_name': r.state_name
+        }
+        res_list.append(res)
+
+    return render_template('forms/result.html', data=res_list)
+
+
+@app.route('/state/<int:state_id>')
+def get_lgas_in_state(state_id):
+    results = session.query(lga).filter(lga.state_id == state_id).all()
+    lga_list = []
+    for r in results:
+        res = {
+            'lga_id': r.lga_id,
+            'uniqueid': r.uniqueid,
+            'lga_name': r.lga_name
+        }
+        lga_list.append(res)
+
+    data = {
+        'status_code': 200,
+        'data': lga_list
+    }
+    return jsonify(data)
+
+
+@app.route('/ward/<int:lga_id>')
+def get_wards_in_lgas(lga_id):
+    results = session.query(ward).filter(ward.lga_id == lga_id).all()
+    ward_list = []
+    for r in results:
+        res = {
+            'ward_id': r.ward_id,
+            'ward_name': r.ward_name,
+            'uniquewardid': r.uniqueid,
+            'uniqueid': r.uniqueid
+        }
+        ward_list.append(res)
+
+    data = {
+        'status_code': 200,
+        'data': ward_list
+    }
+    return jsonify(data)
+
+
+@app.route('/pol/<int:ward_id>')
+def get_pus_in_ward(ward_id):
+    results = session.query(polling_unit).filter(polling_unit.uniquewardid == ward_id).all()
+    pu_list = []
+    for r in results:
+        res = {
+            'pu_id': r.polling_unit_id,
+            'pu_name': r.polling_unit_name,
+            'uniqueid': r.uniqueid
+        }
+        pu_list.append(res)
+
+    data = {
+        'status_code': 200,
+        'data': pu_list
+    }
+    return jsonify(data)
 
 
 if __name__ == '__main__':

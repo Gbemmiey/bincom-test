@@ -1,0 +1,33 @@
+* {
+  box-sizing: border-box;
+}
+
+.results {
+  display: flex;
+  margin: 20px auto;
+  padding: 10px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 80%;
+  height: auto;
+  background-color: darkseagreen;
+}
+
+.result {
+  margin-bottom: 10px;
+  background-color: antiquewhite;
+  width: 100%;
+  border-radius: 20px;
+  padding: 10px;
+  width: 100%;
+}
+
+span {
+  justify-self: flex-end;
+  text-align: end;
+  text-decoration: none;
+  width: 100%;
+}
+
+/*# sourceMappingURL=lgas.css.map */

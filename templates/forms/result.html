@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/views/lgas.css') }}">
+</head>
+<body>
+<script src="{{ url_for('static', filename='js/result.js') }}"></script>
+<h1>Upload results for a new Polling Unit</h1>
+
+<div class="parameters">
+    <label for="states">States
+        <select name="states" id="states_list" onchange="if (this.selectedIndex) getLGAs();">
+            {% for each in data %}
+                <option value="{{ each.state_id }}">{{ each.state_name }}</option>
+            {% endfor %}
+        </select>
+
+    </label>
+    <label for="lgas">LGAs
+        <select name="lgas" id="lgas_list" onchange="if (this.selectedIndex) getWards();">
+        </select>
+
+    </label>
+
+    <label for="wards">Wards
+        <select name="wards" id="wards_list" onchange="if (this.selectedIndex) getPollingUnits();">
+        </select>
+
+    </label>
+
+    <label for="pol_unit">Polling Unit
+        <select name="pol_unit" id="pol_unit_list" onchange="if (this.selectedIndex) displayForm();">
+        </select>
+
+    </label>
+</div>
+
+<div class="form">
+
+</div>
+
+</body>
+</html>

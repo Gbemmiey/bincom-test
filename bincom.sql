@@ -6510,7 +6510,7 @@ values (
 ), (
   155, 
   '10', 
-  'LABO', 
+  'LABOUR',
   1012, 
   'Joseph Ogurume-christopher', 
   '2011-04-26 17:26:20', 
@@ -6574,7 +6574,7 @@ values (
 ), (
   163, 
   '15', 
-  'LABO', 
+  'LABOUR',
   139, 
   '', 
   '2011-04-26 17:27:54', 
@@ -6638,7 +6638,7 @@ values (
 ), (
   171, 
   '16', 
-  'LABO', 
+  'LABOUR',
   596, 
   'bright oteri', 
   '2011-04-26 18:04:38', 
@@ -6702,7 +6702,7 @@ values (
 ), (
   179, 
   '18', 
-  'LABO', 
+  'LABOUR',
   627, 
   'Ruheme - Christopher', 
   '2011-04-26 18:13:27', 
@@ -6766,7 +6766,7 @@ values (
 ), (
   187, 
   '19', 
-  'LABO', 
+  'LABOUR',
   77, 
   'Enukpere Eric- christopher', 
   '2011-04-26 18:22:57', 
@@ -6838,7 +6838,7 @@ values (
 ), (
   196, 
   '20', 
-  'LABO', 
+  'LABOUR',
   426, 
   'Chris Tonne- christopher', 
   '2011-04-26 18:25:24', 
@@ -6910,7 +6910,7 @@ values (
 ), (
   205, 
   '21', 
-  'LABO', 
+  'LABOUR',
   805, 
   'ajeke jerry-christopher ', 
   '2011-04-26 18:27:32', 
@@ -6982,7 +6982,7 @@ values (
 ), (
   214, 
   '24', 
-  'LABO', 
+  'LABOUR',
   349, 
   'Tenison nana- christoper', 
   '2011-04-26 18:33:01', 
@@ -7054,7 +7054,7 @@ values (
 ), (
   223, 
   '23', 
-  'LABO', 
+  'LABOUR',
   943, 
   'Tenison nana- christoper', 
   '2011-04-26 18:34:47', 
@@ -7126,7 +7126,7 @@ values (
 ), (
   232, 
   '22', 
-  'LABO', 
+  'LABOUR',
   428, 
   'BRIGHT OTERI, OGUNMERU DARE', 
   '2011-04-26 18:35:09', 
@@ -7198,7 +7198,7 @@ values (
 ), (
   241, 
   '25', 
-  'LABO', 
+  'LABOUR',
   774, 
   'Chris Tonne- christopher', 
   '2011-04-26 18:45:19', 
@@ -7270,7 +7270,7 @@ values (
 ), (
   250, 
   '26', 
-  'LABO', 
+  'LABOUR',
   932, 
   'CHRIS TONWE, OGUNMERU DARE', 
   '2011-04-26 18:46:01', 
@@ -7342,7 +7342,7 @@ values (
 ), (
   259, 
   '27', 
-  'LABO', 
+  'LABOUR',
   492, 
   'BRIGHT OTERI, OGUNMERU DARE', 
   '2011-04-26 18:47:53', 

@@ -15,23 +15,10 @@ function getVoteCounts() {
     fetch(url)
         .then((response) => response.json())
         .then((data) => {
-
-            console.log(sumArray(data.scores))
-            // console.log(data);
-            console.log(data.sum);
+            votes_text.textContent = data.sum + ' votes'
 
         });
 
 
 }
 
-function sumArray(array) {
-    const ourArray = array;
-    let sum = 0;
-
-    for (let i = 0; i < ourArray.length; i += 1) {
-        sum += ourArray[i];
-    }
-
-    return sum;
-}

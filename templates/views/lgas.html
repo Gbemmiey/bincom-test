@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Local Governments</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/views/results.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/views/lgas.css') }}">
 
 </head>
 <body>
 <script src="{{ url_for('static', filename='js/lga.js') }}"></script>
-<h1>Local Governments</h1>
+<h1>Check total number of votes in local Governments</h1>
 
 <div class="count">
     <select name="lga" id="lga_list">
@@ -23,16 +23,9 @@
 
 <div class="results">
     {% for l in data %}
-        <a href="">
-            <div class="result">
-                <span>{{ l.lga_name }} </span>
-                <hr>
-                <div class="result-details">
-                    <p>{{ l.lga_description }}</p>
-                </div>
-            </div>
-        </a>
-
+        <div class="result">
+            <span>{{ l.lga_name }} </span>
+        </div>
     {% endfor %}
 
 </div>
