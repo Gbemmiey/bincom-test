@@ -3,7 +3,9 @@ import os
 from dotenv import dotenv_values
 
 try:
-    database_path = os.getenv('DATABASE_URL')
+    db_url = os.getenv('DATABASE_URL')
+    db_url = str.replace(db_url, 'postgres', 'postgresql')
+    database_path = db_url
 except:
     env_variables = dotenv_values()
     database_name = env_variables['DATABASE_NAME']
