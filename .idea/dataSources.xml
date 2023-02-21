@@ -15,5 +15,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5432/bincom-polls</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="Bincom-Polls on Heroku" uuid="154f66bb-bf75-40a5-86d8-a725cc1a5e82">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ec2-52-71-69-66.compute-1.amazonaws.com:5432/d39r473hhuql4v</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
