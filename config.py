@@ -2,12 +2,15 @@ import os
 
 from dotenv import dotenv_values
 
-env_variables = dotenv_values()
-database_name = env_variables['DATABASE_NAME']
-username = env_variables['DATABASE_USERNAME']
-password = env_variables['DATABASE_PASSWORD']
-database_uri = env_variables['DATABASE_URI']
-database_path = f'postgresql://{username}:{password}@{database_uri}/{database_name}'
+try:
+    database_path = os.getenv('DATABASE_URL')
+except:
+    env_variables = dotenv_values()
+    database_name = env_variables['DATABASE_NAME']
+    username = env_variables['DATABASE_USERNAME']
+    password = env_variables['DATABASE_PASSWORD']
+    database_uri = env_variables['DATABASE_URI']
+    database_path = f'postgresql://{username}:{password}@{database_uri}/{database_name}'
 
 
 class Config:
