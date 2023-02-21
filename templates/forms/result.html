@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Result</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/views/lgas.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/forms/result.css') }}">
 </head>
 <body>
 <script src="{{ url_for('static', filename='js/result.js') }}"></script>
@@ -25,21 +25,38 @@
     </label>
 
     <label for="wards">Wards
-        <select name="wards" id="wards_list" onchange="if (this.selectedIndex) getPollingUnits();">
+        <select name="wards" id="wards_list" onclick="if (this.selectedIndex) getPollingUnits();"
+                onchange="if (this.selectedIndex) getPollingUnits();">
         </select>
 
     </label>
 
+</div>
+
+<form class="form" action="/result" id="result_form" method="post">
     <label for="pol_unit">Polling Unit
-        <select name="pol_unit" id="pol_unit_list" onchange="if (this.selectedIndex) displayForm();">
+        <select name="pol_unit" id="pol_unit_list" onclick="displayForm()"
+                onchange="if (this.selectedIndex) displayForm();">
         </select>
-
     </label>
-</div>
+    <div id="form_params">
+        <label for="pol_uniqueid">Polling Unit's Uniqueid
+            <input type="text" id="pol_uniqueid" name="pol_uniqueid" disabled>
+        </label>
+        {% for party in parties %}
+            <div>
+                <label for="{{ party.part_id }}">{{ party.party_name }}
+                    <input class="party" type="number" name="{{ party.party_id }}" required id="{{ party.party_id }}"
+                           value="1">
+                </label>
+            </div>
+            <hr>
+        {% endfor %}
+        <input type="submit" value="Upload">
 
-<div class="form">
+    </div>
 
-</div>
+</form>
 
 </body>
 </html>

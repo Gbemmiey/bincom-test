@@ -1,15 +1,14 @@
+import datetime
+
 from flask import Flask
 from flask import render_template, url_for, redirect, jsonify
+from flask import request
 
 from sqlalchemy import create_engine, func, and_
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.sql import functions
 
 from model import *
 from config import Config
-
-import numpy as np
-import pandas as pd
 
 app = Flask(__name__)
 
@@ -23,7 +22,7 @@ with app.app_context():
 
 @app.route('/')
 def hello_world():  # put application's code here
-    return 'Hello World!'
+    return render_template('views/homepage.html')
 
 
 @app.route('/pu/<int:pu_id>', methods=['GET'])
@@ -50,17 +49,6 @@ def display_polling_unit_results(pu_id):
 
     options['unit_name'] = unit_name
     options['unit_description'] = unit_description
-
-    # results = announced_pu_results.query.filter_by(polling_unit_uniqueid=pu_id)
-    # results_list = []
-    # for r in results:
-    #     result = {
-    #         'id': r.result_id,
-    #         'polling_unit_uniqueid': r.polling_unit_uniqueid,
-    #         'party_abbreviation': r.party_abbreviation,
-    #         'party_score': r.party_score
-    #     }
-    #     results_list.append(result)
 
     return render_template('/views/polling_unit.html', data=pol_res, options=options)
 
@@ -141,7 +129,18 @@ def display_result_form():
         }
         res_list.append(res)
 
-    return render_template('forms/result.html', data=res_list)
+    p_results = session.query(party).all()
+
+    p_result_list = []
+    for r in p_results:
+        res = {
+            'party_name': r.partyname,
+            'party_id': r.partyid
+        }
+        p_result_list.append(res)
+    p_data = p_result_list
+
+    return render_template('forms/result.html', data=res_list, parties=p_data)
 
 
 @app.route('/state/<int:state_id>')
@@ -200,6 +199,47 @@ def get_pus_in_ward(ward_id):
         'data': pu_list
     }
     return jsonify(data)
+
+
+@app.route('/parties')
+def get_parties():
+    results = session.query(party).all()
+    result_list = []
+    for r in results:
+        res = {
+            'party_name': r.partyname,
+            'party_id': r.partyid
+        }
+        result_list.append(res)
+    data = {
+        'status_code': 200,
+        'data': result_list
+    }
+    return jsonify(data)
+
+
+@app.route('/pol_unit/<int:pol_uniqueid>')
+def get_pol_unit_uniqueid(pol_uniqueid):
+    result = session.query(polling_unit).filter(polling_unit.uniqueid == pol_uniqueid).one()
+    res = {
+        'id': result.id,
+        'uniqueid': result.uniqueid,
+        'polling_unit_id': result.polling_unit_id,
+        'polling_unit_number': result.polling_unit_number
+    }
+    return jsonify(res)
+
+
+@app.route('/result', methods=['POST'])
+def upload_result():
+    form_data = request.form
+    p_list = session.query(party).all()
+    for p in p_list:
+        announced_pu_results(polling_unit_uniqueid='', party_abbreviation='', party_score='',
+                             entered_by_user='Gbemmiey', date_entered=datetime.datetime.now(),
+                             user_ip_address='127.0.0.1')
+
+    return ""
 
 
 if __name__ == '__main__':
